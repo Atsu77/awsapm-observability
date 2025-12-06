@@ -1,5 +1,5 @@
 私の目的はこのハンズオンを実行し、技術に対する理解を深めることです。
-必要があれば↓のドキュメントを最初に読み込んでください。
+↓のドキュメントを最初に読み込んでください。
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Service-Application-Observability-for-AWS-GitHub-Action.html
 
 # CloudWatch Application Signals GitHub Action ハンズオン（CDK TypeScript 版）
