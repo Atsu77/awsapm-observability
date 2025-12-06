@@ -17,6 +17,9 @@
     ]
   },
   "context": {
+    "githubOrg": "Atsu77",
+    "githubRepo": "awsapm-observability",
+    "githubBranch": "main",
     "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": true,
     "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": true,
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
