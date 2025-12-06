@@ -1,0 +1,50 @@
+name: Application observability for AWS
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  awsapm-investigation:
+    if: contains(github.event.comment.body, '@awsapm')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Prepare Investigation Context
+        id: prepare
+        uses: aws-actions/application-observability-for-aws@v1
+        with:
+          bot_name: "@awsapm"
+          cli_tool: "claude_code"
+
+      - name: Run Claude Investigation
+        id: claude
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          use_bedrock: "true"
+          model: "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+          prompt_file: ${{ steps.prepare.outputs.prompt_file }}
+          mcp_config: ${{ steps.prepare.outputs.mcp_config_file }}
+          allowed_tools: ${{ steps.prepare.outputs.allowed_tools }}
+
+      - name: Post Investigation Results
+        if: always()
+        uses: aws-actions/application-observability-for-aws@v1
+        with:
+          cli_tool: "claude_code"
+          comment_id: ${{ steps.prepare.outputs.awsapm_comment_id }}
+          output_file: ${{ steps.claude.outputs.execution_file }}
+          output_status: ${{ steps.claude.outputs.conclusion }}
